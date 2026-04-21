@@ -21,6 +21,54 @@ LEFT join alumnoCursos acu
 On acu.idcurso = procur.idcurso
 AND procur.esjefe = TRUE
 
+-- Consulta 2: Lista de alumnos por curso con más inasistencias por mes en el año 2019. 
+SELECT 
+    c.Id AS Curso,
+    a.Id AS Alumno,
+    a.Nombre,
+    DATE_TRUNC('month', f.Fecha) AS Mes,
+    COUNT(*) AS Asistencias
+FROM ASISTENCIA f
+JOIN ALU_CURSO ac ON f.IdAluCurso = ac.Id
+JOIN ALUMNO a ON ac.IdAlumno = a.Id
+JOIN CURSO c ON ac.IdCurso = c.Id
+WHERE EXTRACT(YEAR FROM f.Fecha) = 2019
+GROUP BY c.Id, a.Id, a.Nombre, Mes
+ORDER BY Mes, Asistencias ASC;
+
+--  Consulta 3: Lista de empleados identificando su rol, sueldo y comuna de residencia. Debe estar ordenada por comuna y sueldo.
+SELECT 
+    e.Nombre,
+    e.Rol,
+    s.Cantidad AS Sueldo,
+    c.Nombre AS Comuna
+FROM EMPLEADO e
+JOIN SUELDO s ON e.IdSueldo = s.Id
+JOIN COMUNA c ON e.IdComuna = c.Id
+ORDER BY c.Nombre, s.Cantidad;
+
+
+-- Consulta 2: Curso con menos alumnos por año.
+SELECT 
+    c.Anio,
+    c.Id AS Curso,
+    COUNT(ac.IdAlumno) AS CantidadAlumnos
+FROM CURSO c
+JOIN ALU_CURSO ac ON c.Id = ac.IdCurso
+GROUP BY c.Anio, c.Id
+HAVING COUNT(ac.IdAlumno) = (
+    SELECT MIN(cantidad)
+    FROM (
+        SELECT 
+            c2.Anio,
+            COUNT(ac2.IdAlumno) AS cantidad
+        FROM CURSO c2
+        JOIN ALU_CURSO ac2 ON c2.Id = ac2.IdCurso
+        WHERE c2.Anio = c.Anio
+        GROUP BY c2.Id, c2.Anio
+    ) sub
+);
+
 -- Consulta 5: Identificar por curso a los alumnos que no han faltado nunca.
 
 WITH totalClasesPorCurso AS (
