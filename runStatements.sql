@@ -90,19 +90,18 @@ asistenciasPorAlumnoCurso AS (
     GROUP BY ac.IdCurso, ac.IdAlumno
 )
 SELECT 
-    col.Nombre AS colegio,
     pc.Nombre AS nombre_curso,
     c.Anio AS año,
-    al.Nombre AS nombre_alumno,
-    al.Apellido AS apellido_alumno
+    a.Nombre AS nombre_alumno,
+    a.Rut AS rut_alumno
 FROM asistenciasPorAlumnoCurso aac
 JOIN totalClasesPorCurso tc ON tc.id_curso = aac.id_curso
 JOIN CURSO c ON c.Id = aac.id_curso
 JOIN PANTILLA_CURSO pc ON pc.Id = c.IdPantillaCurso
-JOIN COLEGIO col ON col.Id = c.IdColegio
-JOIN ALUMNO al ON al.Id = aac.id_alumno
+JOIN ALUMNO a ON a.Id = aac.id_alumno
 WHERE aac.clases_asistidas = tc.total_clases
-ORDER BY colegio, nombre_curso, año, apellido_alumno, nombre_alumno;
+ORDER BY nombre_curso, año, nombre_alumno;
+
 
 SELECT '--- 6. PROFESOR CON MAS HORAS Y SU SUELDO ---' AS Resultado;
 SELECT 
