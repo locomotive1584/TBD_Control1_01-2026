@@ -48,7 +48,7 @@ JOIN COMUNA c ON e.IdComuna = c.Id
 ORDER BY c.Nombre, s.Cantidad;
 
 
--- Consulta 2: Curso con menos alumnos por año.
+-- Consulta 4: Curso con menos alumnos por año.
 SELECT 
     c.Anio,
     c.Id AS Curso,
