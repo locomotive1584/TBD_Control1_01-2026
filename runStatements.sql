@@ -104,6 +104,43 @@ JOIN ALUMNO al ON al.Id = aac.id_alumno
 WHERE aac.clases_asistidas = tc.total_clases
 ORDER BY colegio, nombre_curso, año, apellido_alumno, nombre_alumno;
 
+SELECT '--- 6. PROFESOR CON MAS HORAS Y SU SUELDO ---' AS Resultado;
+SELECT 
+    e.Nombre AS Nombre_Profesor, 
+    s.Cantidad AS Sueldo, 
+    COUNT(fh.Id) AS Total_Bloques
+FROM PROFESOR p
+JOIN EMPLEADO e ON p.IdEmpleado = e.Id
+JOIN SUELDO s ON e.Id = s.IdEmpleado
+JOIN PROF_CURSO pc ON p.Id = pc.IdProfesor
+JOIN FRANJA_HORARIA fh ON pc.Id = fh.IdProfCurso
+GROUP BY e.Nombre, s.Cantidad
+ORDER BY Total_Bloques DESC LIMIT 1;
+
+SELECT '--- 7. PROFESOR CON MENOS HORAS Y SU SUELDO ---' AS Resultado;
+SELECT 
+    e.Nombre AS Nombre_Profesor, 
+    s.Cantidad AS Sueldo, 
+    COUNT(fh.Id) AS Total_Bloques
+FROM PROFESOR p
+JOIN EMPLEADO e ON p.IdEmpleado = e.Id
+JOIN SUELDO s ON e.Id = s.IdEmpleado
+JOIN PROF_CURSO pc ON p.Id = pc.IdProfesor
+JOIN FRANJA_HORARIA fh ON pc.Id = fh.IdProfCurso
+GROUP BY e.Nombre, s.Cantidad
+ORDER BY Total_Bloques ASC LIMIT 1;
+
+SELECT '--- 8. ALUMNOS DONDE EL APODERADO NO ES PROGENITOR ---' AS Resultado;
+SELECT 
+    pcn.Nombre AS Curso,
+    a.Nombre AS Alumno, 
+    ap.Nombre AS Apoderado
+FROM ALUMNO a
+JOIN APODERADO ap ON a.IdApoderado = ap.Id
+JOIN ALU_CURSO ac ON a.Id = ac.IdAlumno
+JOIN CURSO c ON ac.IdCurso = c.Id
+JOIN PANTILLA_CURSO pcn ON c.IdPantillaCurso = pcn.Id
+WHERE ap.esProgenitor = FALSE;
 
 -- Consulta 9: colegio con mejor asistencia promedio en 2019
 SELECT 
